@@ -1,0 +1,45 @@
+
+public class DaemonExample {
+	public static void main(String[] args) {
+		try{
+	
+	//main thread is a non-daemon thread
+	String name = Thread.currentThread().getName();
+	boolean isDaemon = Thread.currentThread().isDaemon();
+	
+	System.out.println("Name:"+name+",isDaemon:"+ isDaemon);
+	//any new thread that is spawned from the main is also non-daemon in nature
+	Runnable task = new Task();
+	Thread t1 = new Thread(task,"T1");
+	System.out.println("Thread spawned from main thread:");
+	System.out.println("Name:"+t1.getName()+",isDaemon:"+t1.isDaemon());
+	
+	//you can make a daemon thread execute by calling the sertDaemon(
+	t1.setDaemon(true);
+	t1.start();
+	
+	//wait for T1 to finish
+	
+	t1.join();
+		}
+		catch(Exception e)
+		{
+			System.out.println("ERROR!!!");
+		}
+
+}
+	private static class Task implements Runnable{
+		@Override
+		public void run()
+		{
+			Thread t = Thread.currentThread();
+			System.out.println("Thread made daemon by calling the setDaemon() method");
+			System.out.println("Name:"+t.getName());
+			
+			//any new thread created from the daemon thread
+			Thread t2 = new Thread("T2");
+			System.out.println("thread spawned from a daemon thread");
+			System.out.println("Name:"+t2.getName());
+		}
+	}
+}
